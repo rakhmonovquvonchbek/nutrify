@@ -23,6 +23,19 @@ export interface FoodItem {
   portion: string;
   imageUrl?: string;
   timestamp: number;
+  confidence?: number; // recognition confidence score
+  alternatives?: FoodAlternative[]; // alternative recognition options
+}
+
+export interface FoodAlternative {
+  id: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  portion: string;
+  confidence: number;
 }
 
 export interface DailyLog {
