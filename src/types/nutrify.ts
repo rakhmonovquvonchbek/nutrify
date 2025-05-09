@@ -7,8 +7,10 @@ export interface UserProfile {
   weight?: number; // in kg
   gender?: 'male' | 'female' | 'other';
   goal: 'lose' | 'maintain' | 'gain';
+  activityLevel?: 'sedentary' | 'light' | 'moderate' | 'very_active';
   dietaryPreferences: string[];
   dailyCalorieGoal: number;
+  measurementSystem: 'metric' | 'imperial';
 }
 
 export interface FoodItem {

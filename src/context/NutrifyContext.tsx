@@ -10,6 +10,7 @@ interface NutrifyContextType {
   recentFoods: FoodItem[];
   favoriteFoods: FoodItem[];
   setUser: (user: UserProfile) => void;
+  updateUserProfile: (updates: Partial<UserProfile>) => void;
   addFoodItem: (item: FoodItem) => void;
   setOnboarded: (value: boolean) => void;
   addToFavorites: (item: FoodItem) => void;
@@ -24,6 +25,7 @@ const defaultContext: NutrifyContextType = {
   recentFoods: [],
   favoriteFoods: [],
   setUser: () => {},
+  updateUserProfile: () => {},
   addFoodItem: () => {},
   setOnboarded: () => {},
   addToFavorites: () => {},
@@ -35,7 +37,7 @@ const NutrifyContext = createContext<NutrifyContextType>(defaultContext);
 export const useNutrify = () => useContext(NutrifyContext);
 
 export const NutrifyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUserState] = useState<UserProfile | null>(null);
   const [currentDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [todaysLog, setTodaysLog] = useState<DailyLog | null>(null);
   const [isOnboarded, setIsOnboarded] = useState<boolean>(false);
@@ -50,7 +52,7 @@ export const NutrifyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const savedRecentFoods = localStorage.getItem('nutrify_recentFoods');
     const savedFavoriteFoods = localStorage.getItem('nutrify_favoriteFoods');
 
-    if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedUser) setUserState(JSON.parse(savedUser));
     if (savedOnboarded) setIsOnboarded(JSON.parse(savedOnboarded));
     if (savedTodaysLog) setTodaysLog(JSON.parse(savedTodaysLog));
     if (savedRecentFoods) setRecentFoods(JSON.parse(savedRecentFoods));
@@ -88,6 +90,16 @@ export const NutrifyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     if (favoriteFoods.length) localStorage.setItem('nutrify_favoriteFoods', JSON.stringify(favoriteFoods));
   }, [favoriteFoods]);
+
+  const setUser = (newUser: UserProfile) => {
+    setUserState(newUser);
+  };
+
+  const updateUserProfile = (updates: Partial<UserProfile>) => {
+    if (user) {
+      setUserState({ ...user, ...updates });
+    }
+  };
 
   const setOnboarded = (value: boolean) => {
     setIsOnboarded(value);
@@ -129,6 +141,7 @@ export const NutrifyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     recentFoods,
     favoriteFoods,
     setUser,
+    updateUserProfile,
     addFoodItem,
     setOnboarded,
     addToFavorites,
